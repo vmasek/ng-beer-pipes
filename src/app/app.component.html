@@ -1,20 +1,54 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<p>Today is {{now | date}}.</p>
+<p>Today also is {{now | myDate}} in another format.</p>
+<p>You can buy Jägermeister for around {{1800 | myCurrency}}</p>
+<p>Jägermeister has more than {{1450 | convertCalories}}</p>
+
+
+
+
+<form [formGroup]="filterForm"
+      novalidate
+>
+  <div class="filter-input-chip-container">
+    <mat-form-field>
+      <input type="text"
+             formControlName="user"
+             matInput
+             [matAutocomplete]="userAutocomplete"
+             placeholder="User"
+             (keyup.enter)="createChip('user', 'users')"
+      >
+      <mat-autocomplete autoActiveFirstOption
+                        #userAutocomplete="matAutocomplete"
+      >
+        <mat-option (click)="createChip('user', 'users')"
+                    *ngFor="let option of filterForm.get('user').value | autocomplete:{
+                          normalize: true,
+                          keys: ['name', 'nick'],
+                          targets: users
+                        }"
+                    [value]="option.obj.name"
+        >
+          {{option.obj.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-chip-list>
+      <mat-chip *ngFor="let name of filterForm.get('users').value">
+        {{name}}
+        <mat-icon class="mat-18"
+                  color="warn"
+                  (click)="removeChipFromTarget('users', name)"
+        >
+          clear
+        </mat-icon>
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+</form>
+
+
+
+<!--<p>User name is {{userID}} and id is {{userID | toUserName | async}}</p>-->
