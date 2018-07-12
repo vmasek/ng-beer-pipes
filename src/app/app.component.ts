@@ -1,78 +1,47 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MOCK_USERS } from './mock.data';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  readonly now = new Date();
-  readonly users = [
-    {
-      name: 'Joshua Ford'
-    },
-    {
-      name: 'Diana Torres'
-    },
-    {
-      name: 'Andrea Reynolds'
-    },
-    {
-      name: 'Julia Greene'
-    },
-    {
-      name: 'Vincent Thompson'
-    },
-    {
-      name: 'Russell Willis',
-      nick: 'wololo'
-    },
-    {
-      name: 'Walter Alvarado'
-    },
-    {
-      name: 'Vojtěch Mašek',
-      ick: 'vojta'
-    },
-    {
-      name: 'Vojtech Mašek',
-      nick: 'vojto'
-    },
-    {
-      name: 'Tomáš Tester'
-    },
-    {
-      name: 'Matyáš Listitem'
-    },
-  ];
+  readonly users = MOCK_USERS;
 
-  readonly filterForm: FormGroup = this.fb.group({
+  readonly userFilterForm: FormGroup = this.fb.group({
     user: '',
     users: [],
   });
+
+  readonly userSearchForm = this.fb.group({
+    user: ['']
+  });
+
+  loading: { [name: string]: boolean } = {};
 
   constructor(private readonly fb: FormBuilder) {
   }
 
 
   createChip(inputTarget: string, chipTarget: string): void {
-    const inputValue = this.filterForm.get(inputTarget).value;
+    const inputValue = this.userFilterForm.get(inputTarget).value;
 
     if (!inputValue) {
       return;
     }
 
-    const chipsValue = this.filterForm.get(chipTarget).value || [];
+    const chipsValue = this.userFilterForm.get(chipTarget).value || [];
 
     if (chipsValue.includes(inputValue)) {
       // value already exists, remove text from input
-      this.filterForm.patchValue({
+      this.userFilterForm.patchValue({
         [inputTarget]: '',
       });
     } else {
-      this.filterForm.patchValue({
+      this.userFilterForm.patchValue({
         [inputTarget]: '',
         [chipTarget]: [...chipsValue, inputValue],
       });
@@ -80,6 +49,18 @@ export class AppComponent {
   }
 
   removeChipFromTarget(target: string, value: string): void {
-    this.filterForm.get(target).patchValue(this.filterForm.get(target).value.filter((v: string) => v !== value));
+    this.userFilterForm.get(target).patchValue(this.userFilterForm.get(target).value.filter((v: string) => v !== value));
+  }
+
+  buy(name: string) {
+    this.loading[name] = true;
+    // this.api.postCreateLicenseProductUserID({
+    //   product: name,
+    //   userID
+    // }).subscribe(
+    //   () => this.snackBar.open(`${name} license successfully purchased`, '', {duration: 3000}),
+    //   error => this.snackBar.open(error.message, '', {duration: 5000}),
+    //   () => this.loading[name] = false
+    // );
   }
 }

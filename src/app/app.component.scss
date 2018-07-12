@@ -1,0 +1,43 @@
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-expansion-panel.mat-expanded {
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+.product-logo {
+  $size: 42px;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.search-form-field {
+  width: 100%;
+}
+
+.container {
+  margin: 0 16px 16px 16px;
+}
+
+.section {
+  margin-top: 64px;
+}
+
+.list {
+  margin-top: 80px;
+}

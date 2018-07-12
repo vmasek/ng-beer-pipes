@@ -1,0 +1,35 @@
+/** WARNING: Do NOT import this file in any component style */
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+// an alternate dark theme.
+$primary: mat-palette($mat-light-blue, 500, 300, 700);
+$accent: mat-palette($mat-green, 400, A100, A700); // stylelint-disable-line value-keyword-case
+$warn: mat-palette($mat-deep-orange);
+$theme: mat-dark-theme($primary, $accent, $warn);
+
+@include angular-material-theme($theme);
+
+$background-color: map-get(map-get($theme, background), background);
+
+* {
+  color: $light-primary-text;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba($background-color, 0.8);
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent linear-gradient(to bottom, mat-color($primary) 0%, mat-color($primary, 900) 100%) !important;
+}

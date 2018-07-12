@@ -1,21 +1,22 @@
-// tslint:disable:no-any
 import { Pipe, PipeTransform } from '@angular/core';
-import * as fuzzy from 'fuzzysort';
+import { go as search } from 'fuzzysort';
 import memo from 'memo-decorator';
-import KeysOptions = Fuzzysort.KeysOptions;
 import KeysResults = Fuzzysort.KeysResults;
-import Prepared = Fuzzysort.Prepared;
-
 
 function replaceAccents(str: string): string {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
 }
 
-interface AutocompletePipeOptions {
+interface AutocompletePipeOptions<T> {
+  allowTypo: boolean;
+  keys: string[];
   normalize: boolean;
   showAllWhenEmpty: boolean;
-  keys: string[];
-  targets: { [key: string]: string }[];
+  targets: T[];
+}
+
+interface StringMap {
+  [key: string]: string;
 }
 
 const normPrefix = '_norm';
@@ -26,32 +27,36 @@ const normPrefix = '_norm';
 })
 export class AutocompletePipe implements PipeTransform {
   transform(inputValue: string, {
-    normalize = true,
-    showAllWhenEmpty = true,
+    allowTypo = true,
     keys = [],
+    normalize = false,
+    showAllWhenEmpty = true,
     targets = [],
-  }: AutocompletePipeOptions): KeysResults<any> {
+  }: AutocompletePipeOptions<StringMap>): KeysResults<StringMap> {
     if (showAllWhenEmpty && !inputValue) {
-      return <any>targets.map(target => ({obj: target})) as KeysResults<any>;
+      return Object.defineProperties(targets.map(target => ({obj: target})), {score: {value: 0}, total: {value: targets.length}});
     }
 
-    return <any>fuzzy.go(
+    // This is the search function from fuzzy-sort library (to demonstrate the functionality).
+    // It can be replaced by any other filter for searching.
+    return search<StringMap>(
       replaceAccents(inputValue),
       this.prepareTargets(targets, keys, normalize),
       {
-        allowTypo: true,
-        keys: normalize
+        allowTypo,
+        keys: normalize // add prefix to the keys because we will be filtering the normalised targets
           ? keys.map(key => `${normPrefix}${key}`)
           : keys
-      } as KeysOptions<any>
-    ) as KeysResults<any>;
+      }
+    );
   }
 
   @memo()
-  private prepareTargets(targets: { [key: string]: string }[], keys: string[], normalize: boolean): Prepared[] {
-    return <any>targets.map((item) => ({
+  private prepareTargets(targets: StringMap[], keys: string[], normalize: boolean): StringMap[] {
+    return targets.map((item) => ({
+      // when normalisation is on, add prefixed keys to target items
       ...normalize && keys.reduce((acc, key) => ({...acc, [`${normPrefix}${key}`]: replaceAccents(item[key])}), {}),
       ...item
-    })) as Prepared[];
+    }));
   }
 }

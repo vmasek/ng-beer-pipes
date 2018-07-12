@@ -1,54 +1,105 @@
+<div class="container">
+  <h1 class="mat-h1">Search examples using autocomplete pipe</h1>
+  <div class="section">
+    <h2 class="mat-h2">Simple autocomplete with dropdown and chip list</h2>
+    <form [formGroup]="userFilterForm"
+          novalidate
+    >
+      <div class="filter-input-chip-container">
+        <mat-form-field>
+          <input type="text"
+                 formControlName="user"
+                 matInput
+                 [matAutocomplete]="userAutocomplete"
+                 placeholder="User"
+                 (keyup.enter)="createChip('user', 'users')"
+          >
+          <mat-hint>Use a name or nick</mat-hint>
+          <mat-autocomplete autoActiveFirstOption
+                            #userAutocomplete="matAutocomplete"
+          >
+            <mat-option
+              (click)="createChip('user', 'users')"
+              *ngFor="let option of userFilterForm.get('user').value | autocomplete:{
+                      normalize: true,
+                      keys: ['name', 'nick'],
+                      targets: users
+                  }"
+              [value]="option.obj.name"
+            >
+              {{option.obj.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-<p>Today is {{now | date}}.</p>
-<p>Today also is {{now | myDate}} in another format.</p>
-<p>You can buy Jägermeister for around {{1800 | myCurrency}}</p>
-<p>Jägermeister has more than {{1450 | convertCalories}}</p>
-
-
-
-
-<form [formGroup]="filterForm"
-      novalidate
->
-  <div class="filter-input-chip-container">
-    <mat-form-field>
-      <input type="text"
-             formControlName="user"
-             matInput
-             [matAutocomplete]="userAutocomplete"
-             placeholder="User"
-             (keyup.enter)="createChip('user', 'users')"
-      >
-      <mat-autocomplete autoActiveFirstOption
-                        #userAutocomplete="matAutocomplete"
-      >
-        <mat-option (click)="createChip('user', 'users')"
-                    *ngFor="let option of filterForm.get('user').value | autocomplete:{
-                          normalize: true,
-                          keys: ['name', 'nick'],
-                          targets: users
-                        }"
-                    [value]="option.obj.name"
-        >
-          {{option.obj.name}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <mat-chip-list>
-      <mat-chip *ngFor="let name of filterForm.get('users').value">
-        {{name}}
-        <mat-icon class="mat-18"
-                  color="warn"
-                  (click)="removeChipFromTarget('users', name)"
-        >
-          clear
-        </mat-icon>
-      </mat-chip>
-    </mat-chip-list>
+        <mat-chip-list>
+          <mat-chip *ngFor="let name of userFilterForm.get('users').value">
+            {{name}}
+            <mat-icon class="mat-18"
+                      color="warn"
+                      (click)="removeChipFromTarget('users', name)"
+            >
+              clear
+            </mat-icon>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+    </form>
   </div>
-</form>
+  <div class="section">
+    <h2 class="mat-h2">Search with expandable sorted list</h2>
+    <form [formGroup]="userSearchForm"
+          novalidate
+    >
+      <mat-form-field class="search-form-field">
+        <input type="text"
+               formControlName="user"
+               matInput
+               placeholder="User"
+        >
+        <mat-hint>Use a name or nick</mat-hint>
+      </mat-form-field>
 
+      <div class="list">
+        <mat-accordion
+          class="list example-headers-align"
+          *ngFor="let option of userSearchForm.get('user').value | autocomplete:{
+                normalize: true,
+                keys: ['name', 'nick'],
+                targets: users
+            };let index = index"
+        >
+          <mat-expansion-panel [expanded]="index === 0">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="title-container">
+                <img [src]="option.obj.image || '/assets/placeholder.png'"
+                     alt="logo"
+                     class="product-logo"
+                >
+                <span>{{option.obj.name}}</span>
+              </mat-panel-title>
+              <mat-panel-description>
+                <span>{{option.obj.nick}}</span>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
 
+            <div>{{option.obj.bio}}</div>
 
-<!--<p>User name is {{userID}} and id is {{userID | toUserName | async}}</p>-->
+            <mat-action-row>
+              <a mat-raised-button
+                 class="button-with-spinner "
+                 (click)="buy(option.obj.name)"
+                 color="accent"
+              >
+                Do something
+                <ng-container *ngIf="loading[option.obj.name]">
+                  <mat-spinner class="button-spinner"></mat-spinner>
+                </ng-container>
+              </a>
+            </mat-action-row>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </form>
+  </div>
+</div>

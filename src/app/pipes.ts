@@ -70,21 +70,3 @@ export class ConvertCaloriesPipe extends DecimalPipe implements PipeTransform {
     return `${super.transform(cal / 100, digitsInfo)} kcal`;
   }
 }
-
-
-
-// @Pipe({
-//   name: 'toUserName',
-//   pure: false,
-// })
-// export class UserNameFromIdPipe implements PipeTransform {
-//   constructor(private readonly db: DatabaseService) {
-//   }
-//
-//   transform(userID: string): Observable<string> {
-//     return this.db.getUsers().pipe(
-//       take(1),
-//       map((users) => (users.find((user) => user.id === userID) || {name: 'Unknown'}).name),
-//     );
-//   }
-// }
