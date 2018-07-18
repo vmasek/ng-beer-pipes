@@ -11,9 +11,11 @@ import { MOCK_USERS } from './mock.data';
 export class AppComponent {
   readonly users = MOCK_USERS;
 
+  readonly emptyChipText = 'No users selected';
+
   readonly userFilterForm: FormGroup = this.fb.group({
     user: '',
-    users: [],
+    users: [[this.emptyChipText]],
   });
 
   readonly userSearchForm = this.fb.group({
@@ -31,7 +33,7 @@ export class AppComponent {
       return;
     }
 
-    const chipsValue = this.userFilterForm.get(chipTarget).value || [];
+    const chipsValue = (this.userFilterForm.get(chipTarget).value || []).filter(value => value !== this.emptyChipText);
 
     if (chipsValue.includes(inputValue)) {
       // value already exists, remove text from input
@@ -47,6 +49,7 @@ export class AppComponent {
   }
 
   removeChipFromTarget(target: string, value: string): void {
-    this.userFilterForm.get(target).patchValue(this.userFilterForm.get(target).value.filter((v: string) => v !== value));
+    const result = this.userFilterForm.get(target).value.filter((v: string) => v !== value);
+    this.userFilterForm.get(target).patchValue(result.length > 0 ? result : [this.emptyChipText]);
   }
 }

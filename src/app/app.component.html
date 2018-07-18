@@ -32,17 +32,19 @@
           </mat-autocomplete>
         </mat-form-field>
 
-        <mat-chip-list>
-          <mat-chip *ngFor="let name of userFilterForm.get('users').value">
-            {{name}}
-            <mat-icon class="mat-18"
-                      color="warn"
-                      (click)="removeChipFromTarget('users', name)"
-            >
-              clear
-            </mat-icon>
-          </mat-chip>
-        </mat-chip-list>
+        <div class="chip-list">
+          <mat-chip-list >
+            <mat-chip *ngFor="let name of userFilterForm.get('users').value">
+              {{name}}
+              <mat-icon class="mat-18"
+                        color="warn"
+                        (click)="removeChipFromTarget('users', name)"
+              >
+                clear
+              </mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </div>
       </div>
     </form>
   </div>
