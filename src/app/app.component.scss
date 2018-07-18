@@ -41,3 +41,12 @@
 .list {
   margin-top: 80px;
 }
+
+.no-results {
+  text-align: center;
+
+  .input-query {
+    font-weight: 600;
+    margin: 0 4px;
+  }
+}

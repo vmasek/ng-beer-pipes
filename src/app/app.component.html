@@ -61,44 +61,49 @@
       </mat-form-field>
 
       <div class="list">
-        <mat-accordion
-          class="list example-headers-align"
-          *ngFor="let option of userSearchForm.get('user').value | autocomplete:{
+        <ng-container
+          *ngIf="userSearchForm.get('user').value | autocomplete:{
                 normalize: true,
                 keys: ['name', 'nick'],
                 targets: users
-            };let index = index"
+            } as results; else listEmpty"
         >
-          <mat-expansion-panel [expanded]="index === 0">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="title-container">
-                <img [src]="option.obj.image || '/assets/placeholder.png'"
-                     alt="logo"
-                     class="product-logo"
-                >
-                <span>{{option.obj.name}}</span>
-              </mat-panel-title>
-              <mat-panel-description>
-                <span>{{option.obj.nick}}</span>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
+          <ng-container *ngIf="results.length > 0; else listEmpty">
+            <mat-accordion class="list example-headers-align"
+                           *ngFor="let option of results;let index = index"
+            >
+              <mat-expansion-panel [expanded]="index === 0">
+                <mat-expansion-panel-header>
+                  <mat-panel-title class="title-container">
+                    <img [src]="option.obj.image || '/assets/placeholder.png'"
+                         alt="logo"
+                         class="product-logo"
+                    >
+                    <span>{{option.obj.name}}</span>
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    <span>{{option.obj.nick}}</span>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
 
-            <div>{{option.obj.bio}}</div>
+                <div>{{option.obj.bio}}</div>
 
-            <mat-action-row>
-              <a mat-raised-button
-                 class="button-with-spinner "
-                 (click)="buy(option.obj.name)"
-                 color="accent"
-              >
-                Do something
-                <ng-container *ngIf="loading[option.obj.name]">
-                  <mat-spinner class="button-spinner"></mat-spinner>
-                </ng-container>
-              </a>
-            </mat-action-row>
-          </mat-expansion-panel>
-        </mat-accordion>
+                <mat-action-row>
+                  <a mat-raised-button
+                     color="accent"
+                  >
+                    Do nothing
+                  </a>
+                </mat-action-row>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </ng-container>
+        </ng-container>
+        <ng-template #listEmpty>
+          <div class="no-results">
+            No results found for '<span class="input-query">{{userSearchForm.get('user').value}}</span>', please try another query
+          </div>
+        </ng-template>
       </div>
     </form>
   </div>
