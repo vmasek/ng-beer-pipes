@@ -20,8 +20,6 @@ export class AppComponent {
     user: ['']
   });
 
-  loading: { [name: string]: boolean } = {};
-
   constructor(private readonly fb: FormBuilder) {
   }
 
@@ -50,17 +48,5 @@ export class AppComponent {
 
   removeChipFromTarget(target: string, value: string): void {
     this.userFilterForm.get(target).patchValue(this.userFilterForm.get(target).value.filter((v: string) => v !== value));
-  }
-
-  buy(name: string) {
-    this.loading[name] = true;
-    // this.api.postCreateLicenseProductUserID({
-    //   product: name,
-    //   userID
-    // }).subscribe(
-    //   () => this.snackBar.open(`${name} license successfully purchased`, '', {duration: 3000}),
-    //   error => this.snackBar.open(error.message, '', {duration: 5000}),
-    //   () => this.loading[name] = false
-    // );
   }
 }
